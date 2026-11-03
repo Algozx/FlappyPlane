@@ -14,7 +14,7 @@ public class FluxoDeJogo : MonoBehaviour
 
     public void RestartJogo(){
         if(Time.timeScale == 0){
-            SceneManager.LoadScene("AltasAventuras");
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             Time.timeScale = 1;
         }
     }

@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ControlaAviao : MonoBehaviour
@@ -15,21 +12,36 @@ public class ControlaAviao : MonoBehaviour
 
     private void Start() {
         fisica = GetComponent<Rigidbody2D>();
-        fluxoDeJogo = GameObject.FindObjectOfType<FluxoDeJogo>();
-        pontuacao = GameObject.FindObjectOfType<ControlePontuacao>();
+        fluxoDeJogo = FindAnyObjectByType<FluxoDeJogo>();
+        pontuacao = FindAnyObjectByType<ControlePontuacao>();
         audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
     {
-        if(Input.GetMouseButtonDown(0)){
+        // Jogo pausado (game over): o clique serve só para o botão de reiniciar.
+        if(Time.timeScale == 0) return;
+
+        if(ComandoDePulo()){
             Impulsionar();
         }
     }
 
+    // Espaço, clique do mouse ou toque na tela.
+    bool ComandoDePulo()
+    {
+        if(Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) return true;
+
+        for(int i = 0; i < Input.touchCount; i++){
+            if(Input.GetTouch(i).phase == TouchPhase.Began) return true;
+        }
+        return false;
+    }
+
     private void Impulsionar()
     {
-        fisica.velocity = Vector2.up * forçaDoImpulso;
+        fisica.linearVelocity = Vector2.up * forçaDoImpulso;
+        audioSource.pitch = Random.Range(0.95f, 1.05f);
         audioSource.PlayOneShot(sompulo);
     }
 
